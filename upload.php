@@ -1,49 +1,51 @@
-<?php 
-if ($_POST) {
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-    }
-    $title = $_POST['title'];
-    $content = $_POST['message'];
-    try {        
-        include('connection.php');         
-        /* Create a prepared statement */
-        $stmt = $db->prepare("INSERT INTO doc (id, title, message) VALUES (:id, :title, :message)");
-        
-        /* bind params */
-        if (isset($_POST['id'])) {
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        }        
-        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-        $stmt->bindParam(':message', $content, PDO::PARAM_STR);
-        
-        /* execute the query */
-        if ( $stmt->execute() ) {
-            echo "Row Inserted - <a href='list.php'>Read Here</a>";
-        }
-        
-        /* close connection */
-        $db = null;
-    }
-    catch (PDOExecption $e){
-        echo $e->getMessage();
-    }
-}    
+<?php
+require_once __DIR__.'/bootstrap.php';
 ?>
-<?php include 'views/header.php'; ?>
-    <div class="container">
-        <form action="" method="POST">                
-            <div class="form-group mb-3">
-                <label>Title: </label>
-                <input class="form-control" type="text" name="title" required />
-            </div>
 
-            <div class="form-group mb-3">
-                <label>Message</label>
-                <textarea class="form-control" name="message" id="content" cols="30" rows="10" required></textarea>
-            </div>
-            <br>
-            <input type="submit" class="btn btn-secondary text-light"/>
-        </form>
+<?php include 'views/header.php'; ?>
+    <div id="app" v-cloak>
+        <div class="container">
+            <h6><a href="<?= CONFIG['site_url'] ?>">Liste des documents</a></h6>
+            <form>
+                <div class="form-group mb-3">
+                    <label>Title: </label>
+                    <input class="form-control" type="text" name="title" required v-model="form.title" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Message</label>
+                    <textarea class="form-control" name="message" id="content" cols="30" rows="10" required v-model="form.message"></textarea>
+                </div>
+                <br>
+                {{form}}
+                <button 
+                    class="btn btn-secondary text-light"
+                    @click.prevent="storeDoc" 
+                >Store</button>
+            </form>            
+        </div>
     </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        const { createApp, ref } = Vue
+
+        const app = createApp({
+            setup() {
+                const form = ref({title: '', message: ''});
+
+                async function storeDoc() {
+                    const payload = { title: form.value.title, message: form.value.message };
+                    const res = await axios.post(siteURL + 'api/upload.php', payload);
+                    alert('Thank you');
+                }                
+
+                return { siteURL, storeDoc, form }
+            }            
+        });
+
+        app.mount('#app');
+    </script>
 <?php include 'views/footer.php'; ?>

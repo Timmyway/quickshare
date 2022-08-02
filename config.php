@@ -1,6 +1,7 @@
 <?php
-define('APP_NAME', 'quickshare');
-define('SEP', DIRECTORY_SEPARATOR);
-define('SITE_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")."://$_SERVER[HTTP_HOST]/".APP_NAME.'/');
-define('ROOT', $_SERVER["DOCUMENT_ROOT"].SEP.APP_NAME.SEP);
-define('DB_PATH', ROOT.'quickshare.sqlite3');
+return [
+    'name' => 'quickshare',
+    'site_url' => ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http" )."://$_SERVER[HTTP_HOST]/quickshare/",
+    'root' => $_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR.'quickshare'.DIRECTORY_SEPARATOR,
+    'db_path' => $_SERVER["DOCUMENT_ROOT"].'/quickshare/quickshare.sqlite3'
+];

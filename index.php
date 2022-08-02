@@ -1,27 +1,33 @@
 <?php
-try {
-    require 'config.php';
-    include_once(ROOT.'connection.php');
-    
-    /* Create a prepared statement */
-    $stmt = $db -> prepare("CREATE TABLE IF NOT EXISTS doc (id INTEGER PRIMARY KEY, title VARCHAR(50), message TEXT);");
-    
-    /* execute the query */
-    $stmt -> execute();    
-    
-    /* close connection */
-    $db = null;
-} catch (PDOExecption $e){
-    echo $e->getMessage();
-}
+require_once __DIR__.'/bootstrap.php';
 ?>
 
 <?php include 'views/header.php'; ?>
     <div id="app" v-cloak>
-        <div class="container">
-        <ul class="list-group" v-for="doc in docs" :key="doc.id">  
-            <li class="list-group-item">{{ doc.title }}</li>
-        </ul>
+        <div class="container p-2">
+            <h6><a href="<?= CONFIG['site_url'].'/upload.php' ?>">Ajouter un document</a></h6>
+            <div class="btn-group" role="group" aria-label="Commands">
+                <button type="button" class="btn btn-sm btn-secondary" @click="showAllDocs">Show all</button>
+                <button type="button" class="btn btn-sm btn-secondary" @click="hideAllDocs">Hide all</button>
+            </div>
+            <table class="table">  
+                <tr>
+                    <th>Title</th>
+                    <th>Message</th>
+                </tr>
+                <tr v-for="doc in docs" :key="doc.id">
+                    <td>
+                        <span>{{ doc.title }}</span>
+                        <button 
+                            class="btn btn-sm btn-outline-primary ms-2"
+                            @click="doc.isVisible = !doc.isVisible"
+                        >{{ doc.isVisible ? 'Hide' : 'Show' }}</button>                        
+                    </td>
+                    <td>                        
+                        <textarea v-show="doc.isVisible" class="form-control" cols="30" rows="5" :value="doc.message" readonly></textarea>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -36,13 +42,21 @@ try {
                 const docs = ref([]);
 
                 async function fetchDocs() {
-                    docs.value = await axios.get(siteURL + 'api/list.php');
+                    resp = await axios.get(siteURL + 'api/list.php');
                     console.log(docs.value);
+                    docs.value = resp.data.response;
+                }
+
+                function showAllDocs() {
+                    docs.value.forEach(doc => doc.isVisible = true);
+                }
+                function hideAllDocs() {
+                    docs.value.forEach(doc => doc.isVisible = false);
                 }
 
                 fetchDocs();
 
-                return { docs, siteURL }
+                return { docs, siteURL, showAllDocs, hideAllDocs }
             }            
         });
 

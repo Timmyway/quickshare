@@ -10,7 +10,7 @@
         [v-cloak] { display: none; }
     </style>
     <script>
-        siteURL = '<?= SITE_URL ?>';
+        siteURL = '<?= CONFIG['site_url'] ?>';
     </script>
 </head>
 <body>    
