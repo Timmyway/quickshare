@@ -1,8 +1,6 @@
 <?php 
     header("Content-Type: application/json");    
-    try {
-        include('../connection.php'); 
-        
+    try {                
         /* Create a prepared statement */
         $stmt = $db->prepare("SELECT * from doc");
 

@@ -1,7 +1,7 @@
 <?php
 try {
     require 'config.php';
-    include(ROOT.'connection.php');
+    include_once(ROOT.'connection.php');
     
     /* Create a prepared statement */
     $stmt = $db -> prepare("CREATE TABLE IF NOT EXISTS doc (id INTEGER PRIMARY KEY, title VARCHAR(50), message TEXT);");
