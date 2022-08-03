@@ -7,7 +7,7 @@ use App\Model\DocModel;
         public static function list()
         {
             header("Content-Type: application/json");    
-            try {
+            try {                
                 $doc_instance = new DocModel;
                 $res = $doc_instance->all();
                         
@@ -31,6 +31,16 @@ use App\Model\DocModel;
             $doc_instance->insert($post_data);
             $json_resp = json_encode(['response' => $post_data]);
             echo $json_resp;  
+        }
+
+        public static function delete()
+        {            
+            header("Content-Type: application/json");
+            $data = json_decode(file_get_contents('php://input'), true);
+            $doc_instance = new DocModel();
+            $doc_instance->delete($data['id']);
+            $json_resp = json_encode(['response' => 'Deleted']);
+            echo $json_resp;
         }        
     }    
 ?>

@@ -26,7 +26,7 @@ class Connection
 
     private function init()
     {
-        $path = 'sqlite:'.CONFIG['db_path'];        
+        $path = 'sqlite:'.CONFIG['db_path'];
         $this->_db = new \PDO($path);
         $this->_db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->_db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);        
